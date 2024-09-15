@@ -1,5 +1,6 @@
 package UserInerface;
 
+import Controller.ClientController;
 import Utils.DatabaseConnection;
 import java.sql.Connection;
 import java.util.Scanner;
@@ -7,6 +8,7 @@ import java.util.Scanner;
 public class UserInterface {
     private Scanner sc = new Scanner(System.in);
     private Connection connection = DatabaseConnection.getInstance().getConnection();
+    private ClientController clientController = new ClientController();
 
     public void showMainMenu(){
         while(true){
@@ -74,5 +76,20 @@ public class UserInterface {
     public void calculateProjectCost(){
         System.out.println("Calculating project cost...");
     }
-
+    public void addClient(){
+        System.out.print("Enter client name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter client address: ");
+        String address = sc.nextLine();
+        System.out.print("Enter client phone: ");
+        String phone = sc.nextLine();
+        System.out.print("Is the client a professional? (true/false): ");
+        boolean isProfessional = sc.nextBoolean();
+        sc.nextLine();
+        ClientController.addClient(name,address,phone,isProfessional);
+        System.out.println("Client added successfully");
+    }
+    public void viewClients(){
+        System.out.println("Viewing all clients...");
+    }
 }
