@@ -4,8 +4,8 @@ public class Project {
     private String name;
     private double profitMargin;
     private double totalCost;
-    private ProjectStatus project_status;
     private Client client;
+    private ProjectStatus project_status;
 
     public enum ProjectStatus {
         IN_PROGRESS,

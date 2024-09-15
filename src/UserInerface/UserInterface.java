@@ -62,7 +62,6 @@ public class UserInterface {
 //        sc.nextLine();
         System.out.println("Enter the Client name: ");
         String clientName = sc.nextLine();
-        sc.nextLine();
         Client client = clientController.getClientByName(clientName);
         if(client == null){
             System.out.println("Client does not exist. Pleas add the client first");
