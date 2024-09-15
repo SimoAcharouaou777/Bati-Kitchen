@@ -1,6 +1,7 @@
 package UserInerface;
 
 import Controller.ClientController;
+import Model.Client;
 import Utils.DatabaseConnection;
 import java.sql.Connection;
 import java.util.Scanner;
@@ -86,10 +87,11 @@ public class UserInterface {
         System.out.print("Is the client a professional? (true/false): ");
         boolean isProfessional = sc.nextBoolean();
         sc.nextLine();
-        ClientController.addClient(name,address,phone,isProfessional);
+        Client client = new Client(name,address,phone,isProfessional);
+        ClientController.addClient(client);
         System.out.println("Client added successfully");
     }
     public void viewClients(){
-        System.out.println("Viewing all clients...");
+        ClientController.viewAllClients();
     }
 }
