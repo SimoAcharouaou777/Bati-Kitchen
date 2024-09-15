@@ -1,7 +1,9 @@
 package UserInerface;
 
 import Controller.ClientController;
+import Controller.ProjectController;
 import Model.Client;
+import Model.Project;
 import Utils.DatabaseConnection;
 import java.sql.Connection;
 import java.util.Scanner;
@@ -10,6 +12,7 @@ public class UserInterface {
     private Scanner sc = new Scanner(System.in);
     private Connection connection = DatabaseConnection.getInstance().getConnection();
     private ClientController clientController = new ClientController();
+
 
     public void showMainMenu(){
         while(true){
@@ -48,7 +51,29 @@ public class UserInterface {
     }
 
     public void createProject(){
-        System.out.println("Creating a new project...");
+        System.out.println("Enter Project Name : ");
+        String projectName = sc.nextLine();
+
+//        System.out.println("Enter Project Profit Margin : ");
+//        double profitMargin = sc.nextDouble();
+//        sc.nextLine();
+//        System.out.println("Enter total cost : ");
+//        double totalCost = sc.nextDouble();
+//        sc.nextLine();
+        System.out.println("Enter the Client name: ");
+        String clientName = sc.nextLine();
+        sc.nextLine();
+        Client client = clientController.getClientByName(clientName);
+        if(client == null){
+            System.out.println("Client does not exist. Pleas add the client first");
+            manageClients();
+            return;
+        }
+        Project project = new Project(projectName,client);
+        ProjectController projectController = new ProjectController();
+        projectController.createProject(project);
+        System.out.println("Project created successfully");
+
     }
     public void viewProjects(){
         System.out.println("Viewing existing projects...");

@@ -12,4 +12,10 @@ public class ClientService {
     public void viewAllClients(){
         clientRepository.viewAllClients();
     }
+    public boolean clientExists(int clientId){
+        return clientRepository.clientExists(clientId);
+    }
+    public Client getClientByName(String name){
+        return clientRepository.getClientByName(name);
+    }
 }

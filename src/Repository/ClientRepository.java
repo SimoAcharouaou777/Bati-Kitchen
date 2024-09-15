@@ -40,4 +40,33 @@ public class ClientRepository {
             e.printStackTrace();
         }
     }
+
+    public boolean clientExists(int clientId){
+        String sql = "SELECT COUNT(*) FROM clients WHERE client_id = ?";
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1, clientId);
+            try(ResultSet rs = stmt.executeQuery()){
+                if(rs.next()){
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public Client getClientByName(String name){
+        String sql = "SELECT * FROM clients WHERE name = ?";
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, name);
+            try(ResultSet rs = stmt.executeQuery()){
+                if(rs.next()){
+                    return new Client(rs.getString("name"), rs.getString("address"), rs.getString("phone"), rs.getBoolean("is_professional"));
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
