@@ -11,4 +11,10 @@ public class ClientController {
     public static void viewAllClients(){
         clientService.viewAllClients();
     }
+    public static boolean clientExists(int clientId){
+        return clientService.clientExists(clientId);
+    }
+    public static Client getClientByName(String name){
+        return clientService.getClientByName(name);
+    }
 }
