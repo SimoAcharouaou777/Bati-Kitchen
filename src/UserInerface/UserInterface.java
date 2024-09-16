@@ -53,13 +53,6 @@ public class UserInterface {
     public void createProject(){
         System.out.println("Enter Project Name : ");
         String projectName = sc.nextLine();
-
-//        System.out.println("Enter Project Profit Margin : ");
-//        double profitMargin = sc.nextDouble();
-//        sc.nextLine();
-//        System.out.println("Enter total cost : ");
-//        double totalCost = sc.nextDouble();
-//        sc.nextLine();
         System.out.println("Enter the Client name: ");
         String clientName = sc.nextLine();
         Client client = clientController.getClientByName(clientName);
