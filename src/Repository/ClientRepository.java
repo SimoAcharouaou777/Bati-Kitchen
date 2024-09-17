@@ -61,7 +61,9 @@ public class ClientRepository {
             stmt.setString(1, name);
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
-                    return new Client(rs.getString("name"), rs.getString("address"), rs.getString("phone"), rs.getBoolean("is_professional"));
+                    Client client = new Client(rs.getString("name"), rs.getString("address"), rs.getString("phone"), rs.getBoolean("is_professional"));
+                    client.setClientId(rs.getInt("client_id"));
+                    return client;
                 }
             }
         }catch(SQLException e){

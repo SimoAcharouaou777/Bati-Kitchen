@@ -1,8 +1,12 @@
 package UserInerface;
 
 import Controller.ClientController;
+import Controller.LaborController;
+import Controller.MaterialController;
 import Controller.ProjectController;
 import Model.Client;
+import Model.Labor;
+import Model.Material;
 import Model.Project;
 import Utils.DatabaseConnection;
 import java.sql.Connection;
@@ -51,6 +55,76 @@ public class UserInterface {
     }
 
     public void createProject(){
+        System.out.println("=== Create New Project ===");
+        System.out.println("1. Select existing client");
+        System.out.println("2. Add a new client");
+        System.out.print("Choose an option: ");
+        int option = sc.nextInt();
+        sc.nextLine();
+
+        Client client;
+        if(option == 1){
+            System.out.println("Enter Client name :");
+            String name = sc.nextLine();
+            client = ClientController.getClientByName(name);
+            if(client == null){
+                System.out.println("Client not found");
+                return;
+            }
+        } else if (option == 2) {
+            manageClients();
+            return;
+        }else{
+            System.out.println("Invalid option");
+            return;
+        }
+
+        System.out.print("Enter project name: ");
+        String ProjectName = sc.nextLine();
+        Project project = new Project(ProjectName,client);
+        ProjectController.createProject(project);
+        System.out.println("Project created successfully");
+
+        String addMoreMaterials;
+        do{
+            System.out.println("=== Add Material ===");
+            System.out.print("Enter material name: ");
+            String materialName = sc.nextLine();
+            System.out.print("Enter unit cost of the material: ");
+            double unitCost = sc.nextDouble();
+            System.out.print("Enter quantity: ");
+            double quantity = sc.nextDouble();
+            System.out.print("Enter transport cost: ");
+            double transportCost = sc.nextDouble();
+            System.out.print("Enter quality coefficient: ");
+            double qualityCoefficient = sc.nextDouble();
+            sc.nextLine();
+
+            Material material = new Material(materialName,  unitCost, quantity,0.0,project.getId(), transportCost, qualityCoefficient);
+            MaterialController.addMaterial(material);
+            System.out.print("Do you want to add another material? (yes/no): ");
+            addMoreMaterials = sc.nextLine();
+        }while (addMoreMaterials.equalsIgnoreCase("yes"));
+
+        String addMoreLabor;
+        do{
+            System.out.println("=== Add Labor ===");
+            System.out.print("Enter labor name (e.g., 'Basic Worker'): ");
+            String laborName = sc.nextLine();
+            System.out.print("Enter hourly rate: ");
+            double hourlyRate = sc.nextDouble();
+            System.out.print("Enter hours worked: ");
+            double hoursWorked = sc.nextDouble();
+            System.out.print("Enter productivity coefficient: ");
+            double productivity = sc.nextDouble();
+            sc.nextLine();
+
+            Labor labor = new Labor(laborName,hourlyRate,hoursWorked ,0.0,project.getId(),hourlyRate, hoursWorked, productivity);
+            LaborController.addLabor(labor);
+            System.out.print("Do you want to add another labor? (yes/no): ");
+            addMoreLabor = sc.nextLine();
+        }while(addMoreLabor.equalsIgnoreCase("yes"));
+
 
     }
     public void viewProjects(){

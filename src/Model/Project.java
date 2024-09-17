@@ -1,6 +1,7 @@
 package Model;
 
 public class Project {
+    private int id;
     private String name;
     private double profitMargin;
     private double totalCost;
@@ -20,6 +21,8 @@ public class Project {
         this.project_status = ProjectStatus.IN_PROGRESS;
         this.client = client;
     }
+    public int getId(){return id;}
+    public void setId(int id){this.id = id;}
     public String getName() {
         return name;
     }
