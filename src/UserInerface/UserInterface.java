@@ -51,20 +51,6 @@ public class UserInterface {
     }
 
     public void createProject(){
-        System.out.println("Enter Project Name : ");
-        String projectName = sc.nextLine();
-        System.out.println("Enter the Client name: ");
-        String clientName = sc.nextLine();
-        Client client = clientController.getClientByName(clientName);
-        if(client == null){
-            System.out.println("Client does not exist. Pleas add the client first");
-            manageClients();
-            return;
-        }
-        Project project = new Project(projectName,client);
-        ProjectController projectController = new ProjectController();
-        projectController.createProject(project);
-        System.out.println("Project created successfully");
 
     }
     public void viewProjects(){
