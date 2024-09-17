@@ -33,4 +33,6 @@ public class Client {
     public boolean isProfessional() {
         return isProfessional;
     }
+
+    public void setClientId(int clientId){this.clientId = clientId;}
 }

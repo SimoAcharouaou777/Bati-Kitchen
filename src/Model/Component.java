@@ -1,23 +1,42 @@
 package Model;
 
 public abstract class Component {
-    protected String name;
-    protected String typeComponent;
-    protected double taxRate;
+    private int id;
+    private String name;
+    private double unitCost;
+    private double quantity;
+    private String componentType;
+    private double vatRate;
+    private int projectId;
 
-    public Component(String name, String typeComponent, double taxRate) {
+    public Component(String name, double unitCost, double quantity, String componentType, double vatRate, int projectId) {
         this.name = name;
-        this.typeComponent = typeComponent;
-        this.taxRate = taxRate;
+        this.unitCost = unitCost;
+        this.quantity = quantity;
+        this.componentType = componentType;
+        this.vatRate = vatRate;
+        this.projectId = projectId;
     }
+
+    // Getters and setters for all fields
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getTypeComponent() { return typeComponent; }
-    public void setTypeComponent(String typeComponent) { this.typeComponent = typeComponent; }
+    public double getUnitCost() { return unitCost; }
+    public void setUnitCost(double unitCost) { this.unitCost = unitCost; }
 
-    public double getTaxRate() { return taxRate; }
-    public void setTaxRate(double taxRate) { this.taxRate = taxRate; }
+    public double getQuantity() { return quantity; }
+    public void setQuantity(double quantity) { this.quantity = quantity; }
 
+    public String getComponentType() { return componentType; }
+    public void setComponentType(String componentType) { this.componentType = componentType; }
+
+    public double getVatRate() { return vatRate; }
+    public void setVatRate(double vatRate) { this.vatRate = vatRate; }
+
+    public int getProjectId() { return projectId; }
+    public void setProjectId(int projectId) { this.projectId = projectId; }
 }
