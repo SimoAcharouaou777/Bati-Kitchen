@@ -5,8 +5,8 @@ public class Labor extends Component {
     private double hoursWorked;
     private double workerProductivity;
 
-    public Labor(String name, double unitCost, double quantity, double vatRate, int projectId, double hourlyRate, double hoursWorked, double workerProductivity) {
-        super(name, unitCost, quantity, "Labor", vatRate, projectId);
+    public Labor(String name, double vatRate, int projectId, double hourlyRate, double hoursWorked, double workerProductivity) {
+        super(name,"Labor", vatRate, projectId);
         this.hourlyRate = hourlyRate;
         this.hoursWorked = hoursWorked;
         this.workerProductivity = workerProductivity;
@@ -25,4 +25,6 @@ public class Labor extends Component {
     public double calculateLaborCost() {
         return hourlyRate * hoursWorked * workerProductivity;
     }
+
+
 }

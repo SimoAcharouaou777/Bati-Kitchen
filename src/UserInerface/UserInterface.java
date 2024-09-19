@@ -10,6 +10,8 @@ import Model.Material;
 import Model.Project;
 import Utils.DatabaseConnection;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -54,7 +56,7 @@ public class UserInterface {
         }
     }
 
-    public void createProject(){
+    public void createProject() {
         System.out.println("=== Create New Project ===");
         System.out.println("1. Select existing client");
         System.out.println("2. Add a new client");
@@ -63,20 +65,33 @@ public class UserInterface {
         sc.nextLine();
 
         Client client;
-        if(option == 1){
-            System.out.println("Enter Client name :");
-            String name = sc.nextLine();
-            client = ClientController.getClientByName(name);
-            if(client == null){
-                System.out.println("Client not found");
+        while (true) {
+            if (option == 1) {
+                System.out.println("Enter Client name :");
+                String name = sc.nextLine();
+                client = ClientController.getClientByName(name);
+                if (client == null) {
+                    System.out.println("Client not found");
+                    return;
+                } else {
+                    System.out.println("Client Information  : ");
+                    System.out.println("Name: " + client.getName());
+                    System.out.println("Address: " + client.getAddress());
+                    System.out.println("Phone: " + client.getPhone());
+                    System.out.println("Is Professional: " + client.isProfessional());
+                    System.out.print("Continue with this client ? (yes/no) : ");
+                    String continueWithClient = sc.nextLine();
+                    if (continueWithClient.equalsIgnoreCase("yes")) {
+                        break;
+                    }
+                }
+            } else if (option == 2) {
+                manageClients();
+                return;
+            } else {
+                System.out.println("Invalid option");
                 return;
             }
-        } else if (option == 2) {
-            manageClients();
-            return;
-        }else{
-            System.out.println("Invalid option");
-            return;
         }
 
         System.out.print("Enter project name: ");
@@ -85,6 +100,7 @@ public class UserInterface {
         ProjectController.createProject(project);
         System.out.println("Project created successfully");
 
+        List<Material> materials = new ArrayList<>();
         String addMoreMaterials;
         do{
             System.out.println("=== Add Material ===");
@@ -102,10 +118,13 @@ public class UserInterface {
 
             Material material = new Material(materialName,  unitCost, quantity,0.0,project.getId(), transportCost, qualityCoefficient);
             MaterialController.addMaterial(material);
+            materials.add(material);
+
             System.out.print("Do you want to add another material? (yes/no): ");
             addMoreMaterials = sc.nextLine();
         }while (addMoreMaterials.equalsIgnoreCase("yes"));
 
+        List<Labor> laborList = new ArrayList<>();
         String addMoreLabor;
         do{
             System.out.println("=== Add Labor ===");
@@ -119,12 +138,88 @@ public class UserInterface {
             double productivity = sc.nextDouble();
             sc.nextLine();
 
-            Labor labor = new Labor(laborName,hourlyRate,hoursWorked ,0.0,project.getId(),hourlyRate, hoursWorked, productivity);
+            Labor labor = new Labor(laborName, 0.0, project.getId(), hourlyRate, hoursWorked, productivity);
             LaborController.addLabor(labor);
+            laborList.add(labor);
+
             System.out.print("Do you want to add another labor? (yes/no): ");
             addMoreLabor = sc.nextLine();
         }while(addMoreLabor.equalsIgnoreCase("yes"));
 
+        System.out.println("--- Calculate Total Cost ---");
+        System.out.print("Apply VAT? (y/n): ");
+        boolean applyVAT = sc.nextLine().equalsIgnoreCase("y");
+        double vatPercentage = 0.0;
+        if (applyVAT) {
+            System.out.print("Enter VAT percentage: ");
+            vatPercentage = sc.nextDouble();
+            sc.nextLine();
+            materials = MaterialController.findMaterialByProjectId(project.getId());
+            for(Material material : materials){
+                material.setVatRate(vatPercentage);
+                MaterialController.updateMaterialTVA(material);
+            }
+            laborList = LaborController.findLaborByProjectId(project.getId());
+            for(Labor labor : laborList){
+                labor.setVatRate(vatPercentage);
+                LaborController.updateLaborTVA(labor);
+            }
+        }
+
+        System.out.print("Apply profit margin? (y/n): ");
+        boolean applyMargin = sc.nextLine().equalsIgnoreCase("y");
+        double marginPercentage = 0.0;
+        if (applyMargin) {
+            System.out.print("Enter profit margin percentage: ");
+            marginPercentage = sc.nextDouble();
+            sc.nextLine();
+            ProjectController.updateProjectProfitMargin(project.getId(),marginPercentage);
+
+        }
+
+        double materialsTotal = 0.0;
+        for (Material material : materials) {
+            double materialCost = (material.getUnitCost() * material.getQuantity()) + material.getTransportCost();
+            materialCost *= material.getQualityCoefficient();
+            materialsTotal += materialCost;
+        }
+
+        double laborTotal = 0.0;
+        for (Labor labor : laborList) {
+            double laborCost = (labor.getHourlyRate() * labor.getHoursWorked()) * labor.getWorkerProductivity();
+            laborTotal += laborCost;
+        }
+
+        double totalBeforeVAT = materialsTotal + laborTotal;
+        double totalVAT = applyVAT ? (totalBeforeVAT * vatPercentage / 100) : 0.0;
+        double totalAfterVAT = totalBeforeVAT + totalVAT;
+        double profitMargin = applyMargin ? (totalAfterVAT * marginPercentage / 100) : 0.0;
+        double totalCost = totalAfterVAT + profitMargin;
+
+        System.out.println("--- Cost Calculation ---");
+        System.out.printf("Total materials cost before VAT: %.2f €%n", materialsTotal);
+        System.out.printf("Total labor cost before VAT: %.2f €%n", laborTotal);
+        System.out.printf("Total cost before VAT: %.2f €%n", totalBeforeVAT);
+        System.out.printf("VAT (%.2f%%): %.2f €%n", vatPercentage, totalVAT);
+        System.out.printf("Profit Margin (%.2f%%): %.2f €%n", marginPercentage, profitMargin);
+        System.out.printf("Total project cost: %.2f €%n", totalCost);
+
+        System.out.println("--- Save the Quote ---");
+        System.out.print("Enter quote issue date (dd/MM/yyyy): ");
+        String issueDate = sc.nextLine();
+        System.out.print("Enter quote validity date (dd/MM/yyyy): ");
+        String validityDate = sc.nextLine();
+        System.out.print("Save the quote? (y/n): ");
+        boolean saveQuote = sc.nextLine().equalsIgnoreCase("y");
+
+        if (saveQuote) {
+            // Save the quote to the database or file here
+            System.out.println("Quote saved successfully!");
+        } else {
+            System.out.println("Quote not saved.");
+        }
+
+        System.out.println("Project creation process completed.");
 
     }
     public void viewProjects(){

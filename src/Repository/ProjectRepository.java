@@ -32,4 +32,16 @@ public class ProjectRepository {
             e.printStackTrace();
         }
     }
+
+    public void updateProjectProfitMargin(int projectId, double profitMargin) {
+        String query = "UPDATE projects SET profit_margin = ? WHERE project_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setDouble(1, profitMargin);
+            preparedStatement.setInt(2, projectId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
