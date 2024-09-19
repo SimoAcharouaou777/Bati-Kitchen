@@ -96,6 +96,9 @@ public class UserInterface {
 
         System.out.print("Enter project name: ");
         String ProjectName = sc.nextLine();
+        System.out.println("Enter the surface area of the project: ");
+        double surfaceArea = sc.nextDouble();
+        sc.nextLine();
         Project project = new Project(ProjectName,client);
         ProjectController.createProject(project);
         System.out.println("Project created successfully");
@@ -120,9 +123,9 @@ public class UserInterface {
             MaterialController.addMaterial(material);
             materials.add(material);
 
-            System.out.print("Do you want to add another material? (yes/no): ");
+            System.out.print("Do you want to add another material? (y/n): ");
             addMoreMaterials = sc.nextLine();
-        }while (addMoreMaterials.equalsIgnoreCase("yes"));
+        }while (addMoreMaterials.equalsIgnoreCase("y"));
 
         List<Labor> laborList = new ArrayList<>();
         String addMoreLabor;
@@ -142,9 +145,9 @@ public class UserInterface {
             LaborController.addLabor(labor);
             laborList.add(labor);
 
-            System.out.print("Do you want to add another labor? (yes/no): ");
+            System.out.print("Do you want to add another labor? (y/n): ");
             addMoreLabor = sc.nextLine();
-        }while(addMoreLabor.equalsIgnoreCase("yes"));
+        }while(addMoreLabor.equalsIgnoreCase("y"));
 
         System.out.println("--- Calculate Total Cost ---");
         System.out.print("Apply VAT? (y/n): ");
@@ -176,16 +179,17 @@ public class UserInterface {
             ProjectController.updateProjectProfitMargin(project.getId(),marginPercentage);
 
         }
-
+        List<Material> materials1 = MaterialController.findMaterialByProjectId(project.getId());
+        List<Labor> laborList1 = LaborController.findLaborByProjectId(project.getId());
         double materialsTotal = 0.0;
-        for (Material material : materials) {
+        for (Material material : materials1) {
             double materialCost = (material.getUnitCost() * material.getQuantity()) + material.getTransportCost();
             materialCost *= material.getQualityCoefficient();
             materialsTotal += materialCost;
         }
 
         double laborTotal = 0.0;
-        for (Labor labor : laborList) {
+        for (Labor labor : laborList1) {
             double laborCost = (labor.getHourlyRate() * labor.getHoursWorked()) * labor.getWorkerProductivity();
             laborTotal += laborCost;
         }
