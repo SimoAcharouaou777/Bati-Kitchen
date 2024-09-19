@@ -9,4 +9,8 @@ public class ProjectController {
         projectService.createProject(project);
     }
 
+    public static void updateProjectProfitMargin(int projectId,double profitMargin){
+        projectService.updateProjectProfitMargin(projectId,profitMargin);
+    }
+
 }
