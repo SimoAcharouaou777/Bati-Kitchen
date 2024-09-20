@@ -1,15 +1,14 @@
 package UserInerface;
 
-import Controller.ClientController;
-import Controller.LaborController;
-import Controller.MaterialController;
-import Controller.ProjectController;
-import Model.Client;
-import Model.Labor;
-import Model.Material;
-import Model.Project;
+import Controller.*;
+import Model.*;
 import Utils.DatabaseConnection;
+
+import java.rmi.registry.LocateRegistry;
 import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -22,7 +21,7 @@ public class UserInterface {
 
     public void showMainMenu(){
         while(true){
-            System.out.println("=== Welcome to Bati-Cuisine ===");
+            System.out.println("=== Welcome to bati-Cuisine ===");
             System.out.println("1. Create a new project");
             System.out.println("2. View existing projects");
             System.out.println("3. Manage Clients");
@@ -122,6 +121,7 @@ public class UserInterface {
             Material material = new Material(materialName,  unitCost, quantity,0.0,project.getId(), transportCost, qualityCoefficient);
             MaterialController.addMaterial(material);
             materials.add(material);
+            System.out.println("Material added successfully");
 
             System.out.print("Do you want to add another material? (y/n): ");
             addMoreMaterials = sc.nextLine();
@@ -144,7 +144,7 @@ public class UserInterface {
             Labor labor = new Labor(laborName, 0.0, project.getId(), hourlyRate, hoursWorked, productivity);
             LaborController.addLabor(labor);
             laborList.add(labor);
-
+            System.out.println("Labor added successfully");
             System.out.print("Do you want to add another labor? (y/n): ");
             addMoreLabor = sc.nextLine();
         }while(addMoreLabor.equalsIgnoreCase("y"));
@@ -190,14 +190,17 @@ public class UserInterface {
 
         double laborTotal = 0.0;
         for (Labor labor : laborList1) {
-            double laborCost = (labor.getHourlyRate() * labor.getHoursWorked()) * labor.getWorkerProductivity();
+            double laborCost = labor.getHourlyRate() * labor.getHoursWorked() * labor.getWorkerProductivity();
             laborTotal += laborCost;
         }
 
         double totalBeforeVAT = materialsTotal + laborTotal;
         double totalVAT = applyVAT ? (totalBeforeVAT * vatPercentage / 100) : 0.0;
         double totalAfterVAT = totalBeforeVAT + totalVAT;
-        double profitMargin = applyMargin ? (totalAfterVAT * marginPercentage / 100) : 0.0;
+        double profitMargin = 0.0;
+        if(applyMargin){
+            profitMargin = totalAfterVAT * marginPercentage / 100;
+        }
         double totalCost = totalAfterVAT + profitMargin;
 
         System.out.println("--- Cost Calculation ---");
@@ -210,22 +213,33 @@ public class UserInterface {
 
         System.out.println("--- Save the Quote ---");
         System.out.print("Enter quote issue date (dd/MM/yyyy): ");
-        String issueDate = sc.nextLine();
-        System.out.print("Enter quote validity date (dd/MM/yyyy): ");
-        String validityDate = sc.nextLine();
-        System.out.print("Save the quote? (y/n): ");
-        boolean saveQuote = sc.nextLine().equalsIgnoreCase("y");
+        String issueDateStr = sc.nextLine();
+        System.out.println("Is the issue accepted ? (y/n): ");
+        boolean isAccepted = sc.nextLine().equalsIgnoreCase("y");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        try{
+            LocalDate issueDate = LocalDate.parse(issueDateStr, formatter);
+            if(isAccepted){
+                System.out.println("Enter quote validity date (dd/MM/yyyy): ");
+                String validityDateStr = sc.nextLine();
+                LocalDate validityDate = LocalDate.parse(validityDateStr, formatter);
 
-        if (saveQuote) {
-            // Save the quote to the database or file here
-            System.out.println("Quote saved successfully!");
-        } else {
-            System.out.println("Quote not saved.");
+                if(issueDate.isBefore(validityDate)){
+                    Quote quote = new Quote(project.getId(), totalCost, issueDate, validityDate, true);
+                    QuoteController.addQuote(quote);
+                    System.out.println("Quote saved successfully!");
+                }else{
+                    Quote quote = new Quote(project.getId(),totalCost,issueDate,null,false);
+                    QuoteController.addQuote(quote);
+                    System.out.println("Quote saved successfully with issue date only!");
+                }
+            }
+        }catch(DateTimeParseException e){
+            System.out.println("Invalid date format");
         }
-
         System.out.println("Project creation process completed.");
-
     }
+
     public void viewProjects(){
         System.out.println("Viewing existing projects...");
     }
