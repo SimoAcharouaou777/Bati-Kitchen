@@ -229,10 +229,12 @@ public class UserInterface {
                     QuoteController.addQuote(quote);
                     System.out.println("Quote saved successfully!");
                 }else{
-                    Quote quote = new Quote(project.getId(),totalCost,issueDate,null,false);
-                    QuoteController.addQuote(quote);
-                    System.out.println("Quote saved successfully with issue date only!");
+                    System.out.println("Validity date must be after issue date");
                 }
+            }else{
+                Quote quote = new Quote(project.getId(), totalCost, issueDate, null, false);
+                QuoteController.addQuote(quote);
+                System.out.println("Quote saved successfully with issue date only!");
             }
         }catch(DateTimeParseException e){
             System.out.println("Invalid date format");
