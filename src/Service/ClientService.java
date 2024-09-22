@@ -18,4 +18,5 @@ public class ClientService {
     public Client getClientByName(String name){
         return clientRepository.getClientByName(name);
     }
+    public Client getClientById(int clientId) { return clientRepository.getClientById(clientId);}
 }

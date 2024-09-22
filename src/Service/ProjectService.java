@@ -3,6 +3,8 @@ package Service;
 import Model.Project;
 import Repository.ProjectRepository;
 
+import java.util.List;
+
 public class ProjectService {
     private ProjectRepository projectRepository = new ProjectRepository();
 
@@ -11,5 +13,9 @@ public class ProjectService {
     }
     public void updateProjectProfitMargin(int projectId, double profitMargin) {
         projectRepository.updateProjectProfitMargin(projectId, profitMargin);
+    }
+    public List<Project> getAllProjects() {
+        return projectRepository.getAllProjects();
+
     }
 }
