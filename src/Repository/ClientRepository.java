@@ -71,4 +71,20 @@ public class ClientRepository {
         }
         return null;
     }
+    public Client getClientById(int clientId){
+        String sql = "SELECT * FROM clients WHERE client_id = ?";
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1, clientId);
+            try(ResultSet rs = stmt.executeQuery()){
+                if(rs.next()){
+                    Client client = new Client(rs.getString("name"), rs.getString("address"), rs.getString("phone"), rs.getBoolean("is_professional"));
+                    client.setClientId(rs.getInt("client_id"));
+                    return client;
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

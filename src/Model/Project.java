@@ -53,6 +53,9 @@ public class Project {
     public void setClientId(Client client) {
         this.client = client;
     }
+    public Client getClient() {
+        return client;
+    }
 
 
 

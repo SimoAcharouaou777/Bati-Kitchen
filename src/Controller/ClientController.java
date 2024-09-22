@@ -17,4 +17,5 @@ public class ClientController {
     public static Client getClientByName(String name){
         return clientService.getClientByName(name);
     }
+    public static Client getClientById(int clientId) { return clientService.getClientById(clientId);}
 }

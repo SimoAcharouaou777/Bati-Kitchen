@@ -1,5 +1,7 @@
 package Repository;
 
+import Controller.ClientController;
+import Model.Client;
 import Model.Project;
 import Utils.DatabaseConnection;
 
@@ -7,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectRepository {
     private Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -43,5 +47,29 @@ public class ProjectRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Project> getAllProjects() {
+        List<Project> projects = new ArrayList<>();
+        String sql = "SELECT * FROM projects";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Project project = new Project( rs.getString("name"), ClientController.getClientById(rs.getInt("client_id")));
+                project.setId(rs.getInt("project_id"));
+                project.setName(rs.getString("name"));
+                project.setProfitMargin(rs.getDouble("profit_margin"));
+                project.setTotalCost(rs.getDouble("total_cost"));
+                int clientId = rs.getInt("client_id");
+                Client client = ClientController.getClientById(clientId);
+                project.setClientId(client);
+                project.setStatus(Project.ProjectStatus.valueOf(rs.getString("project_status")));
+                projects.add(project);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return projects;
     }
 }

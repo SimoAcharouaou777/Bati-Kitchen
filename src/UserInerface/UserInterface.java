@@ -25,8 +25,7 @@ public class UserInterface {
             System.out.println("1. Create a new project");
             System.out.println("2. View existing projects");
             System.out.println("3. Manage Clients");
-            System.out.println("4. Calculate project cost");
-            System.out.println("5. Exit");
+            System.out.println("4. Exit");
             System.out.print("Choose an option: ");
             int option = sc.nextInt();
             sc.nextLine();
@@ -42,9 +41,6 @@ public class UserInterface {
                     manageClients();
                     break;
                 case 4:
-                    calculateProjectCost();
-                    break;
-                case 5:
                     System.out.println("Exiting...");
                     DatabaseConnection.closeConnection(connection);
                     System.exit(0);
@@ -241,7 +237,22 @@ public class UserInterface {
     }
 
     public void viewProjects(){
-        System.out.println("Viewing existing projects...");
+        List<Project> projects = ProjectController.getAllProjects();
+        assert projects != null;
+        for(Project project : projects){
+            Client client = ClientController.getClientByName(project.getClient().getName());
+            List<Material> materials = MaterialController.findMaterialByProjectId(project.getId());
+            List<Labor> laborList = LaborController.findLaborByProjectId(project.getId());
+
+            System.out.println("Project Name : " + project.getName());
+            System.out.println("Client Name : " + client.getName());
+            System.out.println("Client Address : " + client.getAddress());
+            System.out.println("--- Cost Details ---");
+            System.out.println("1. Materials:");
+
+
+
+        }
     }
     public void manageClients(){
         System.out.println("=== Client Management ===");
@@ -263,9 +274,6 @@ public class UserInterface {
             default:
                 System.out.println("Invalid option");
         }
-    }
-    public void calculateProjectCost(){
-        System.out.println("Calculating project cost...");
     }
     public void addClient(){
         System.out.print("Enter client name: ");
