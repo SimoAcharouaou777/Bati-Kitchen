@@ -6,7 +6,5 @@ public class Main {
         DatabaseConnection.getInstance();
         UserInterface ui = new UserInterface();
         ui.showMainMenu();
-
-
     }
 }

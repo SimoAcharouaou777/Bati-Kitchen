@@ -72,4 +72,15 @@ public class ProjectRepository {
         }
         return projects;
     }
+
+    public void updateProjectTotalCost(int projectId, double totalCost) {
+        String query = "UPDATE projects SET total_cost = ? WHERE project_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setDouble(1, totalCost);
+            preparedStatement.setInt(2, projectId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

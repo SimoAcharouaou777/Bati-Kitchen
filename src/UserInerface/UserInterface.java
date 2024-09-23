@@ -199,6 +199,9 @@ public class UserInterface {
         }
         double totalCost = totalAfterVAT + profitMargin;
 
+        project.setTotalCost(totalCost);
+        ProjectController.updateProjectTotalCost(project.getId(),totalCost);
+
         System.out.println("--- Cost Calculation ---");
         System.out.printf("Total materials cost before VAT: %.2f €%n", materialsTotal);
         System.out.printf("Total labor cost before VAT: %.2f €%n", laborTotal);
@@ -224,11 +227,14 @@ public class UserInterface {
                     Quote quote = new Quote(project.getId(), totalCost, issueDate, validityDate, true);
                     QuoteController.addQuote(quote);
                     System.out.println("Quote saved successfully!");
-                }else{
-                    Quote quote = new Quote(project.getId(),totalCost,issueDate,null,false);
-                    QuoteController.addQuote(quote);
-                    System.out.println("Quote saved successfully with issue date only!");
                 }
+                else{
+                    System.out.println("Validity date should be after issue date");
+                }
+            }else{
+                Quote quote = new Quote(project.getId(),totalCost,issueDate,null,false);
+                QuoteController.addQuote(quote);
+                System.out.println("Quote saved successfully with issue date only!");
             }
         }catch(DateTimeParseException e){
             System.out.println("Invalid date format");
@@ -249,8 +255,33 @@ public class UserInterface {
             System.out.println("Client Address : " + client.getAddress());
             System.out.println("--- Cost Details ---");
             System.out.println("1. Materials:");
+            for(Material material : materials){
+                System.out.println("Material Name : " + material.getName());
+                System.out.println("Unit Cost : " + material.getUnitCost());
+                System.out.println("Quantity : " + material.getQuantity());
+                System.out.println("Transport Cost : " + material.getTransportCost());
+                System.out.println("Quality Coefficient : " + material.getQualityCoefficient());
+                System.out.println("VAT Rate : " + material.getVatRate());
 
-
+            }
+            System.out.println("2. Labor:");
+            for(Labor labor : laborList){
+                System.out.println("Labor Name : " + labor.getName());
+                System.out.println("Hourly Rate : " + labor.getHourlyRate());
+                System.out.println("Hours Worked : " + labor.getHoursWorked());
+                System.out.println("Productivity : " + labor.getWorkerProductivity());
+                System.out.println("VAT Rate : " + labor.getVatRate());
+            }
+            System.out.println("3. Total Cost : " + project.getTotalCost());
+            System.out.println("4. Profit Margin : " + project.getProfitMargin());
+            System.out.println("5. Quote : ");
+            Quote quote = QuoteController.getQuoteByProjectId(project.getId());
+            if(quote != null){
+                System.out.println("Issue Date : " + quote.getIssueDate());
+                System.out.println("Validity Date : " + quote.getValidityDate());
+                System.out.println("Is Accepted : " + quote.isAccepted());
+            }
+            System.out.println("====================================");
 
         }
     }
