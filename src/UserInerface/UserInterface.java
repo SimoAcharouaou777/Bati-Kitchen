@@ -218,7 +218,7 @@ public class UserInterface {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try{
             LocalDate issueDate = LocalDate.parse(issueDateStr, formatter);
-            if(isAccepted){
+           if(isAccepted){
                 System.out.println("Enter quote validity date (dd/MM/yyyy): ");
                 String validityDateStr = sc.nextLine();
                 LocalDate validityDate = LocalDate.parse(validityDateStr, formatter);
