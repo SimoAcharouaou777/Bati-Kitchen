@@ -18,5 +18,8 @@ public class ProjectController {
         return projectService.getAllProjects();
 
     }
+    public static void updateProjectTotalCost(int projectId,double totalCost){
+        projectService.updateProjectTotalCost(projectId,totalCost);
+    }
 
 }

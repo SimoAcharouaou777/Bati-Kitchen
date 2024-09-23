@@ -9,4 +9,8 @@ public class QuoteController {
     public static void addQuote(Quote quote){
         quoteService.addQuote(quote);
     }
+    public static Quote getQuoteByProjectId(int projectId){
+        return quoteService.getQuoteByProjectId(projectId);
+    }
+
 }

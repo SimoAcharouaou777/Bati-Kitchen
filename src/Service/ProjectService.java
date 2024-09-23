@@ -16,6 +16,8 @@ public class ProjectService {
     }
     public List<Project> getAllProjects() {
         return projectRepository.getAllProjects();
-
+    }
+    public void updateProjectTotalCost(int projectId, double totalCost) {
+        projectRepository.updateProjectTotalCost(projectId, totalCost);
     }
 }
