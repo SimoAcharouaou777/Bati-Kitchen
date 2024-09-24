@@ -53,10 +53,10 @@ public class LaborController {
             while (resultSet.next()){
                 Labor labor = new Labor(
                         resultSet.getString("name"),
-                        resultSet.getDouble("hourly_rate"),
-                        resultSet.getInt("hours_worked"),
                         resultSet.getDouble("vat_rate"),
                         resultSet.getInt("project_id"),
+                        resultSet.getDouble("hourly_rate"),
+                        resultSet.getInt("hours_worked"),
                         resultSet.getDouble("worker_productivity")
                 );
                 labor.setId(resultSet.getInt("id"));
