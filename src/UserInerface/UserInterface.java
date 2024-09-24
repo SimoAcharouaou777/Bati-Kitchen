@@ -177,18 +177,13 @@ public class UserInterface {
         }
         List<Material> materials1 = MaterialController.findMaterialByProjectId(project.getId());
         List<Labor> laborList1 = LaborController.findLaborByProjectId(project.getId());
-        double materialsTotal = 0.0;
-        for (Material material : materials1) {
-            double materialCost = (material.getUnitCost() * material.getQuantity()) + material.getTransportCost();
-            materialCost *= material.getQualityCoefficient();
-            materialsTotal += materialCost;
-        }
+        double materialsTotal = materials1.stream()
+                .mapToDouble(material -> material.getUnitCost() * material.getQuantity() * material.getQualityCoefficient() + material.getTransportCost())
+                .sum();
 
-        double laborTotal = 0.0;
-        for (Labor labor : laborList1) {
-            double laborCost = labor.getHourlyRate() * labor.getHoursWorked() * labor.getWorkerProductivity();
-            laborTotal += laborCost;
-        }
+        double laborTotal = laborList1.stream()
+                .mapToDouble(labor -> labor.getHourlyRate() * labor.getHoursWorked() * labor.getWorkerProductivity())
+                .sum();
 
         double totalBeforeVAT = materialsTotal + laborTotal;
         double totalVAT = applyVAT ? (totalBeforeVAT * vatPercentage / 100) : 0.0;
